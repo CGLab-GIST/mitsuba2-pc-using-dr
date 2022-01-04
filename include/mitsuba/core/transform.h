@@ -268,6 +268,47 @@ template <typename Point_> struct Transform {
         return Transform(result, transpose(inverse));
     }
 
+    /** \brief Create a look-at camera transformation using rotation
+     * It assumes default vectors, which are
+     * View : (0, 0, 1)
+     * left : (1, 0, 0)
+     * up   : (0, 1, 0)
+     *
+     * look_at_2() rotates 3 axis at once using angle(roll(x), pitch(y), yaw(z))
+     * It applies in the order : yaw -> pitch -> roll
+     *
+     * \param origin Camera position
+     * \param angle  Rotate angle
+     */
+    template <size_t N = Size, enable_if_t<N == 4> = 0>
+    static Transform look_at_2(const Point<Float, 3> &pos,
+                               const Vector<Float, 3> &rot) {
+        using Vector3 = Vector<Float, 3>;
+        using Point3 = Point<Float, 3>;
+
+        const Vector3 x(1, 0, 0);
+        const Vector3 y(0, 1, 0);
+        const Vector3 z(0, 0, 1);
+
+        const Transform trans = Transform::rotate(x, rot[0]) * Transform::rotate(y, rot[1]) * Transform::rotate(z, rot[2]);
+
+        const Vector3 dir = trans * z;
+        const Vector3 up = trans * y;
+        const Vector3 left = trans * x;
+
+        Matrix result = Matrix::from_cols(
+            concat(left, Scalar(0)), concat(up, Scalar(0)),
+            concat(dir, Scalar(0)), concat(pos, Scalar(1)));
+
+        Matrix inverse = Matrix::from_rows(
+            concat(left, Scalar(0)), concat(up, Scalar(0)),
+            concat(dir, Scalar(0)), Vector<Float, 4>(0.f, 0.f, 0.f, 1.f));
+
+        inverse[3] = inverse * concat(-pos, Scalar(1));
+
+        return Transform(result, transpose(inverse));
+    }
+
     /// Creates a transformation that converts from the standard basis to 'frame'
     template <typename Value, size_t N = Size, enable_if_t<N == 4> = 0>
     static Transform to_frame(const Frame<Value> &frame) {

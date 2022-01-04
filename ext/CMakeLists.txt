@@ -235,6 +235,7 @@ if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64|AMD64")
   if (MSVC)
     target_compile_options(asmjit PRIVATE "/wd4804" "/wd4838")
   endif()
+  set_property(TARGET asmjit PROPERTY OUTPUT_NAME "asmjit-mitsuba")
 endif()
 
 # Disable annoying MSVC warnings in rgb2spec build

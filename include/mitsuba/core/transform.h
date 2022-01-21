@@ -219,6 +219,29 @@ template <typename Point_> struct Transform {
         return Transform(trafo, transpose(inv_trafo));
     }
 
+    template <size_t N = Size, enable_if_t<N == 4> = 0>
+    static Transform my_perspective(Float fov_x, Float fov_y, Float near_, Float far_) {
+        Float recip = 1.f / (far_ - near_);
+
+        /* Perform a scale so that the field of view is mapped
+           to the interval [-1, 1] */
+        Float tan_x = enoki::tan(deg_to_rad(fov_x * .5f)), 
+              cot_x = 1.f / tan_x;
+
+        Float tan_y = enoki::tan(deg_to_rad(fov_y * .5f)), 
+              cot_y = 1.f / tan_y;
+
+        Matrix trafo = diag<Matrix>(Vector<Float, Size>(cot_x, cot_y, far_ * recip, 0.f));
+        trafo(2, 3) = -near_ * far_ * recip;
+        trafo(3, 2) = 1.f;
+
+        Matrix inv_trafo = diag<Matrix>(Vector<Float, Size>(tan_x, tan_y, 0.f, rcp(near_)));
+        inv_trafo(2, 3) = 1.f;
+        inv_trafo(3, 2) = (near_ - far_) / (far_ * near_);
+
+        return Transform(trafo, transpose(inv_trafo));
+    }
+
     /** \brief Create an orthographic transformation, which maps Z to [0,1]
      * and leaves the X and Y coordinates untouched.
      *

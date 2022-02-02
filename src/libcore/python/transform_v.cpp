@@ -105,6 +105,8 @@ void bind_transform4f(py::module &m, const char *name) {
             "near"_a, "far"_a, D(Transform, orthographic))
         .def_static("look_at", &Transform4f::template look_at<4>,
             "origin"_a, "target"_a, "up"_a, D(Transform, look_at))
+        .def_static("look_at_2", &Transform4f::template look_at_2<4>,
+            "pos"_a, "rot"_a, D(Transform, look_at_2))
         .def_static("from_frame", &Transform4f::template from_frame<Float>,
             "frame"_a, D(Transform, from_frame))
         .def_static("to_frame", &Transform4f::template to_frame<Float>,

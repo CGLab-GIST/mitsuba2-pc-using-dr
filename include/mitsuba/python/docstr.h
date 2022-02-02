@@ -7428,6 +7428,9 @@ Parameter ``target``:
 Parameter ``up``:
     Up vector)doc";
 
+static const char *__doc_mitsuba_Transform_look_at_2 =
+    R"doc(Empty docstr to compile)doc";
+
 static const char *__doc_mitsuba_Transform_matrix = R"doc(//! @{ \name Fields)doc";
 
 static const char *__doc_mitsuba_Transform_operator_assign = R"doc()doc";

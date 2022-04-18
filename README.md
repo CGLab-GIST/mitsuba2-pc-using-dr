@@ -1,3 +1,5 @@
+#### This fork is used for implementation of "Projector Compensation Framework using Differentiable Rendering". See commit logs to check modifications.
+
 <img src="https://github.com/mitsuba-renderer/mitsuba2/raw/master/docs/images/logo_plain.png" width="120" height="120" alt="Mitsuba logo">
 
 # Mitsuba Renderer 2
